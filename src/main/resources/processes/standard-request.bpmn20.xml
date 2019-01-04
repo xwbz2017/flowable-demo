@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:flowable="http://flowable.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="bap">
+    <!-- standardRequest用来开始流程，在flowable里称为processDefinitionKey -->
+    <process id="standardRequest" name="标准申请流程" isExecutable="true">
+        <!-- 第一步：开始流程，创建申请 -->
+        <startEvent id="startEvent" name="创建申请"/>
+        <sequenceFlow sourceRef="startEvent" targetRef="assignToAuditor"/>
+        <!-- 第二步：分配审批人 -->
+        <!-- 这个AssignToAuditorDelegate类就是解决动态设置审批人的Java类 -->
+        <!-- 审批人列表需要从外部传入或者根据当前流程id来从数据库获取 -->
+        <serviceTask id="assignToAuditor" name="分配审批人" flowable:class="me.xwbz.flowable.delegate.AssignToAuditorDelegate"/>
+        <sequenceFlow sourceRef="assignToAuditor" targetRef="auditorExist"/>
+        <!-- 唯一网关：类似于switch，只能通过一个序列流 -->
+        <!-- 这里就是要么存在，要么不存在 -->
+        <!-- 使用default属性定义默认序列流，在其他序列流条件都不满足的情况下使用  -->
+        <exclusiveGateway id="auditorExist" name="审批人是否存在" default="auditorNotExistFlow"/>
+        <sequenceFlow sourceRef="auditorExist" targetRef="approveTask">
+            <!-- auditMethod是Spring里的一个bean，下面有提到 -->
+            <!-- execution是flowable内部变量，类型是org.flowable.engine.delegate.DelegateExecution，也就是serviceTask里的代理方法拿到的 -->
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+                    ${auditMethod.existAuditor(execution)}
+                ]]>
+            </conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="auditorNotExistFlow" sourceRef="auditorExist" targetRef="agreeDelegate" />
+        <!-- 第三步：审批人审批 -->
+        <userTask id="approveTask" name="等待审批"
+                  flowable:candidateGroups="${auditMethod.getCandidateGroups(execution)}"
+                  flowable:candidateUsers="${auditMethod.getCandidateUsers(execution)}"/>
+        <sequenceFlow sourceRef="approveTask" targetRef="decision"/>
+        <!-- 唯一网关：一个审批一个审批人 -->
+        <exclusiveGateway id="decision" default="rejectFlow"/>
+        <sequenceFlow sourceRef="decision" targetRef="assignToAuditor">
+            <conditionExpression xsi:type="tFormalExpression">
+                <![CDATA[
+                    ${auditMethod.isApproved(execution)}
+                ]]>
+            </conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="rejectFlow" sourceRef="decision" targetRef="rejectDelegate" />
+        <!-- 第四步：同意后存储数据，发送通知 -->
+        <serviceTask id="agreeDelegate" name="数据存储"
+                     flowable:class="me.xwbz.flowable.delegate.StandardRequestAgreeDelegate"/>
+        <sequenceFlow sourceRef="agreeDelegate" targetRef="approveEnd"/>
+
+        <serviceTask id="rejectDelegate" name="回复拒绝消息"
+                     flowable:class="me.xwbz.flowable.delegate.BaseRejectDelegate"/>
+        <sequenceFlow sourceRef="rejectDelegate" targetRef="rejectEnd"/>
+        <!-- 第五步：结束 -->
+        <endEvent id="approveEnd" name="已同意"/>
+
+        <endEvent id="rejectEnd" name="已驳回"/>
+
+    </process>
+
+</definitions>

@@ -1,0 +1,99 @@
+##########################################################
+##################  所有profile共有的配置  #################
+##########################################################
+
+
+###################  项目启动端口  ###################
+server:
+  port: 81
+
+###################  spring配置  ###################
+spring:
+  profiles:
+    active: dev
+  mvc:
+    throw-exception-if-no-handler-found: true
+  jackson:
+    time-zone: GMT+8
+  devtools:
+    restart:
+      additional-paths: flowable-demo/src/main/java
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 25MB
+###################  flowable配置  ##################
+flowable:
+# 关闭定时任务JOB
+  async-executor-activate: false
+management:
+  endpoint:
+    flowable:
+      enabled: true
+###################  mybatis配置  ###################
+mybatis:
+  mapper-locations: classpath:mapper/*.xml,classpath:dao/*.xml
+  type-aliases-package: tk.mybatis.springboot.vo
+
+mapper:
+  not-empty: false
+  identity: MYSQL
+  wrapKeyword: "`{0}`"
+
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
+################### druid配置 ###############
+druid:
+  driver-class-name: com.mysql.jdbc.Driver
+  initial-size: 3
+  min-idle: 1
+  max-active: 20
+  max-wait: 60000
+  time-between-eviction-runs-millis: 60000
+  min-evictable-idle-time-millis: 300000
+  validation-query: SELECT 'x'
+  test-while-idle: true
+  test-on-borrow: false
+  test-on-return: false
+  pool-prepared-statements: true
+  max-pool-prepared-statement-per-connection-size: 20
+  filters: stat,wall
+  use-global-data-source-stat: true
+
+---
+
+##########################################################
+###################  开发环境的profile  ###################
+##########################################################
+spring:
+  profiles: dev
+  devtools:
+    restart:
+      enabled: true #是否开启开发者工具（true/false）
+server:
+  port: 81
+druid:
+  url: jdbc:mysql://localhost:3306/flowable?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+  username: root
+  password: sc
+---
+
+##########################################################
+###################  正式环境的profile  ###################
+##########################################################
+spring:
+  profiles: pro
+  devtools:
+    restart:
+      enabled: false #是否开启开发者工具（true/false）
+server:
+  port: 8080
+druid:
+  url:
+  username:
+  password:
+...
