@@ -57,7 +57,7 @@ public class ProcessServiceTest extends BaseTest {
 
         processService.start(user, param);
 
-        Process process = processService.waitAuditList(auditor, null).get(0);
+        Process process = processService.waitAuditList(auditor, null, 1, 10).get(0);
         log.info("待审批：{}", JSON.toJSONString(process));
 
 //        if(processService.isAssigneeOrCandidate(auditor, process.getTaskId())){
@@ -67,11 +67,11 @@ public class ProcessServiceTest extends BaseTest {
                 new ReasonParam("准了", Arrays.asList(new BaseBean("234", "234.txt"))));
         taskService.complete(process.getTaskId(), Collections.singletonMap(FlowUtil.APPROVED_KEY, true));
 
-        List<Process> list = processService.waitAuditList(auditor, null);
+        List<Process> list = processService.waitAuditList(auditor, null, 1, 10);
         log.info("待审批列表：{}", JSON.toJSONString(list));
         Assert.assertTrue(list.stream().noneMatch(p -> p.getTaskId() != null && p.getTaskId().equals(process.getTaskId())));
 
-        list = processService.auditList(user, null, null);
+        list = processService.auditList(user, null, null, 1, 10);
         log.info("已审批列表：{}", JSON.toJSONString(list));
     }
 
@@ -89,7 +89,7 @@ public class ProcessServiceTest extends BaseTest {
 
         processService.start(user, param);
 
-        Process process = processService.waitAuditList(auditor, null).get(0);
+        Process process = processService.waitAuditList(auditor, null, 1, 10).get(0);
         log.info("待审批：{}", JSON.toJSONString(process));
 
 //        if(processService.isAssigneeOrCandidate(auditor, process.getTaskId())){
@@ -99,29 +99,29 @@ public class ProcessServiceTest extends BaseTest {
                 new ReasonParam("我反对这门亲事",null));
         taskService.complete(process.getTaskId(), Collections.singletonMap(FlowUtil.APPROVED_KEY, false));
 
-        List<Process> list = processService.waitAuditList(auditor, null);
+        List<Process> list = processService.waitAuditList(auditor, null, 1, 10);
         log.info("待审批列表：{}", JSON.toJSONString(list));
         Assert.assertTrue(list.stream().noneMatch(p -> p.getNo().equals(process.getNo())));
 
-        list = processService.auditList(user, null, null);
+        list = processService.auditList(user, null, null, 1, 10);
         log.info("已审批列表：{}", JSON.toJSONString(list));
     }
 
     @Test
     public void waitAuditList() {
-        List<Process> list = processService.waitAuditList(user, null);
+        List<Process> list = processService.waitAuditList(user, null, 1, 10);
         log.info("待审批列表：{}", JSON.toJSONString(list));
     }
 
     @Test
     public void auditList() {
-        List<Process> list = processService.auditList(user, null, null);
+        List<Process> list = processService.auditList(user, null, null, 1, 10);
         log.info("已审批列表：{}", JSON.toJSONString(list));
     }
 
     @Test
     public void myAuditList() {
-        List<Process> list = processService.myAuditList(user, null, AuditStatus.WAIT_AUDIT);
+        List<Process> list = processService.mineList(user, null, AuditStatus.WAIT_AUDIT, 1, 10);
         log.info("我申请的未审批列表：{}", JSON.toJSONString(list));
     }
 
@@ -139,12 +139,12 @@ public class ProcessServiceTest extends BaseTest {
 
         processService.start(user, param);
 
-        List<Process> list = processService.myAuditList(user, null, AuditStatus.WAIT_AUDIT);
+        List<Process> list = processService.mineList(user, null, AuditStatus.WAIT_AUDIT, 1, 10);
         log.info("我申请的未审批列表：{}", JSON.toJSONString(list));
 
         processService.cancel(user, list.get(0).getProcessInstanceId());
 
-        list = processService.myAuditList(user, null, null);
+        list = processService.mineList(user, null, null, 1, 10);
         log.info("我申请的列表：{}", JSON.toJSONString(list));
     }
 }

@@ -109,7 +109,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public List<Process> auditList(User user, String auditType, AuditStatus auditStatus) {
+    public List<Process> auditList(User user, String auditType, AuditStatus auditStatus, int pageNum, int pageSize) {
         // 如果不需要筛选自定义参数
         if (auditStatus == null && StringUtils.isEmpty(auditType)) {
             List<HistoricActivityInstance> activities = historyService.createHistoricActivityInstanceQuery()
@@ -120,7 +120,7 @@ public class ProcessServiceImpl implements ProcessService {
                     // 已结束的（其实就是判断有没有结束时间）
                     .finished()
                     // 分页
-                    .listPage(0, 10);
+                    .listPage((pageNum - 1) * pageSize, pageSize);
             return convertProcessList(activities);
         }
         // 否则需要自定义sql
@@ -150,12 +150,12 @@ public class ProcessServiceImpl implements ProcessService {
             query.parameter(v.getNameKey(), v.getName());
             query.parameter(v.getValueKey(), v.getValue());
         });
-        List<HistoricActivityInstance> activities = query.listPage(0, 10);
+        List<HistoricActivityInstance> activities = query.listPage((pageNum - 1) * pageSize, pageSize);
         return convertProcessList(activities);
     }
 
     @Override
-    public List<Process> waitAuditList(User user, String auditType) {
+    public List<Process> waitAuditList(User user, String auditType, int pageNum, int pageSize) {
         TaskQuery query = taskService.createTaskQuery()
                 // or() 和 endOr()就像是左括号和右括号，中间用or连接条件
                 // 指定是我审批的任务或者所在的组别审批的任务
@@ -169,13 +169,10 @@ public class ProcessServiceImpl implements ProcessService {
         if (StringUtils.isNotEmpty(auditType)) {
             query.processVariableValueEquals(FlowUtil.AUDIT_TYPE_KEY, auditType);
         }
-//        if(auditStatus != null){
-//            query.processVariableValueEquals(FlowUtil.AUDIT_STATUS_KEY, auditStatus.toString());
-//        }
         // 根据创建时间倒序
         return query.orderByTaskCreateTime().desc()
                 // 分页
-                .listPage(0, 10)
+                .listPage((pageNum - 1) * pageSize, pageSize)
                 .stream().map(t -> {
                     // 拿到这个任务的流程实例，用于显示流程开始时间、结束时间、业务编号
                     HistoricProcessInstance p = historyService.createHistoricProcessInstanceQuery()
@@ -206,7 +203,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
-    public List<Process> myAuditList(User user, String auditType, AuditStatus auditStatus) {
+    public List<Process> mineList(User user, String auditType, AuditStatus auditStatus, int pageNum, int pageSize) {
         // startedBy：创建任务时设置的发起人
         HistoricProcessInstanceQuery instanceQuery = historyService.createHistoricProcessInstanceQuery()
                 .startedBy(user.getId());
@@ -220,7 +217,7 @@ public class ProcessServiceImpl implements ProcessService {
 
         return instanceQuery
                 .orderByProcessInstanceStartTime().desc()
-                .listPage(0, 10).stream()
+                .listPage((pageNum - 1) * pageSize, pageSize).stream()
                 //  获取其中的详细和自定义参数
                 .map(this::convertHostoryProcess)
                 .collect(Collectors.toList());
