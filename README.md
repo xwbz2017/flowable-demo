@@ -9,4 +9,10 @@
 2. 审批
 3. 撤销
 
-具体使用详情见<code>ProcessServiceTest</code>
+具体使用详情见[ProcessServiceTest](https://github.com/xwbz2017/flowable-demo/blob/master/src/test/java/me/xwbz/flowable/service/ProcessServiceTest.java)
+
+#### 表单相关流程
+> [文章地址](https://www.cnblogs.com/xwbz/p/10130654.html)
+
+这个目前还没用上，只是自己尝试了一下，大家参考一下就好  
+具体使用详情见[FormControllerTest](https://github.com/xwbz2017/flowable-demo/blob/master/src/test/java/me/xwbz/flowable/controller/FormControllerTest.java)

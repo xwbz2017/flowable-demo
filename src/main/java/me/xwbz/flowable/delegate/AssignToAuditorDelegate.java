@@ -1,6 +1,6 @@
 package me.xwbz.flowable.delegate;
 
-import me.xwbz.flowable.util.FlowUtil;
+import me.xwbz.flowable.common.util.FlowUtil;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 

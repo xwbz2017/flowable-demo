@@ -2,7 +2,7 @@ package me.xwbz.flowable.delegate;
 
 import lombok.extern.slf4j.Slf4j;
 import me.xwbz.flowable.bean.enums.AuditStatus;
-import me.xwbz.flowable.util.FlowUtil;
+import me.xwbz.flowable.common.util.FlowUtil;
 import org.flowable.engine.delegate.DelegateExecution;
 import org.flowable.engine.delegate.JavaDelegate;
 

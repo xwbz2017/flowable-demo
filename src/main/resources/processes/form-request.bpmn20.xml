@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:flowable="http://flowable.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="bap">
+
+    <process id="formRequest" name="表单申请流程" isExecutable="true">
+        <startEvent id="start" name="填写表单" flowable:formKey="test" />
+
+        <sequenceFlow sourceRef="start" targetRef="viewFormDelegate" />
+
+        <serviceTask id="viewFormDelegate" name="展示信息"
+                     flowable:class="me.xwbz.flowable.delegate.FormViewDelegate"/>
+
+        <sequenceFlow sourceRef="viewFormDelegate" targetRef="end" />
+
+        <endEvent id="end" name="结束"/>
+    </process>
+
+</definitions>

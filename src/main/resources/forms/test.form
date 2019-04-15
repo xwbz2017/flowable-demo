@@ -1,0 +1,37 @@
+{
+  "key": "test",
+  "name": "请假流程",
+  "fields": [
+    {
+      "id": "startTime",
+      "name": "开始时间",
+      "type": "date",
+      "required": true,
+      "placeholder": "empty"
+    },
+    {
+      "id": "endTime",
+      "name": "结束时间",
+      "type": "date",
+      "required": true,
+      "placeholder": "empty"
+    },
+    {
+      "id": "reason",
+      "name": "请假原因",
+      "type": "text",
+      "required": true,
+      "placeholder": "empty"
+    }
+  ],
+  "outcomes": [
+    {
+      "id": "sendToParent",
+      "name": "发给上级"
+    },
+    {
+      "id": "sendToHr",
+      "name": "发给人事"
+    }
+  ]
+}

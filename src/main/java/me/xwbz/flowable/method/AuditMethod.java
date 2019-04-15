@@ -2,7 +2,7 @@ package me.xwbz.flowable.method;
 
 import me.xwbz.flowable.bean.CandidateParam;
 import me.xwbz.flowable.bean.enums.CandidateType;
-import me.xwbz.flowable.util.FlowUtil;
+import me.xwbz.flowable.common.util.FlowUtil;
 import org.flowable.engine.delegate.DelegateExecution;
 
 /**

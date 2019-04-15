@@ -17,7 +17,7 @@ Configuration:
     RollingFile: # 输出到文件，超过128MB归档
       name: ROLLING_FILE
       ignoreExceptions: false
-      fileName: "${log.path}/bap/${project.name}.log"
+      fileName: "${log.path}/${project.name}.log"
       filePattern: "${log.path}/$${date:yyyy-MM}/${project.name}-%d{MM-dd}-%i.log.gz"
       ThresholdFilter:
         level: ERROR

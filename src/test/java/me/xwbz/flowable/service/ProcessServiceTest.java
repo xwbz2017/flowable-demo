@@ -2,12 +2,13 @@ package me.xwbz.flowable.service;
 
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
+import me.xwbz.flowable.BaseTest;
 import me.xwbz.flowable.bean.*;
 import me.xwbz.flowable.bean.Process;
 import me.xwbz.flowable.bean.enums.AuditStatus;
 import me.xwbz.flowable.bean.enums.CandidateType;
 import me.xwbz.flowable.bean.enums.OperateType;
-import me.xwbz.flowable.util.FlowUtil;
+import me.xwbz.flowable.common.util.FlowUtil;
 import org.flowable.engine.TaskService;
 import org.junit.Assert;
 import org.junit.Test;

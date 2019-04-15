@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import me.xwbz.flowable.bean.enums.AuditStatus;
-import me.xwbz.flowable.util.FlowUtil;
+import me.xwbz.flowable.common.util.FlowUtil;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.task.Attachment;

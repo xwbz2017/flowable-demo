@@ -6,7 +6,7 @@ import me.xwbz.flowable.bean.Process;
 import me.xwbz.flowable.bean.enums.AuditStatus;
 import me.xwbz.flowable.bean.enums.OperateType;
 import me.xwbz.flowable.service.ProcessService;
-import me.xwbz.flowable.util.FlowUtil;
+import me.xwbz.flowable.common.util.FlowUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.engine.*;

@@ -1,4 +1,4 @@
-package me.xwbz.flowable.util;
+package me.xwbz.flowable.common.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
